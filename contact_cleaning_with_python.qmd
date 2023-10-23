@@ -1,0 +1,64 @@
+---
+title: "Contact Cleaning"
+format: html
+---
+
+# import required libraries
+```{python}
+import pandas as pd
+import re
+```
+
+# load the dataset
+```{python}
+contacts_df = pd.read_excel(r"C:\Users\MaangiJ\Downloads\python_email_cleanup (1).xlsx")
+```
+
+# make a copy of contacts_df
+```{python}
+df = contacts_df.copy()
+```
+
+
+# first approach, steps:
+*  Replace all delimiters with a single delimiter and assign the changes back to the email col.
+*  If the file has 2 delimiters, use str.replace. If they are more, use regex
+*  Split the email column on the delimiter and assign changes back to the email column
+*  Use explode function on the email col
+
+```{python}
+df['email'] = df['email'].str.replace(',', ';')
+```
+
+# use regex
+```{python}
+df['email'] = df['email'].apply(lambda x: re.sub(r'[;,|]', ';', x))
+```
+
+
+# split email column by semicolon
+```{python}
+df['email'] = df['email'].str.split(';')
+```
+
+# explode
+```{python}
+exploded_df = df.explode('email')
+```
+
+# Second Approach, steps:
+*  Pair regex  with split instead of replacing all delimiters with just one.
+*  Assign the changes back to the email col
+*  Use explode function on the email col
+
+# regex paired with split
+```{python}
+df2 = contacts_df.copy()
+
+df2['email'] = df2['email'].apply(lambda x: re.split(r'[,|;]+', x))
+```
+
+# explode
+```{python}
+df_4 = df.explode('email')
+```
